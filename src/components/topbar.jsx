@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import logoImg from "../assets/logo-cubos.svg";
 import sunImg from "../assets/sun.svg";
 
@@ -8,11 +9,11 @@ const Topbar = () => {
         <div className="text-white">
           <img src={logoImg} alt="" className="" />
         </div>
-        <div className="bg-[#B744F714] flex">
+        <Link to="/" className="bg-[#B744F714] flex">
           <button className="cursor-pointer rounded-sm px-5 py-3">
             <img src={sunImg} alt="" className="" />
           </button>
-        </div>
+        </Link>
       </div>
     </header>
   );
