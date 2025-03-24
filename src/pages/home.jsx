@@ -1,19 +1,34 @@
 import { useEffect, useState } from "react";
+import axios from "axios";
 import searchImg from "../assets/Search.svg";
 import filterImg from "../assets/filter.svg";
-import axios from "axios";
+import MovieCard from "../components/movieCard";
 
 const Home = () => {
   const [movies, setMovies] = useState([]);
   const [genres, setGenres] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     getMovies();
     getGenres();
   }, []);
 
-  const getMovies = () => {
-    axios({
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (searchQuery.trim()) {
+        handleSearchMovies(searchQuery);
+      } else {
+        getMovies();
+      }
+    }, 500);
+
+    return () => clearTimeout(delayDebounceFn);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchQuery]);
+
+  const getMovies = async () => {
+    await axios({
       method: "get",
       url: "https://api.themoviedb.org/3/discover/movie",
       params: {
@@ -23,15 +38,15 @@ const Home = () => {
     })
       .then((response) => {
         setMovies(response.data.results);
-        console.log("Filmes: ", response.data.results);
+        console.log("Filmes carregados:", response.data.results);
       })
       .catch((err) => {
-        console.log(err);
+        console.log("Erro ao buscar filmes:", err);
       });
   };
 
-  const getGenres = () => {
-    axios({
+  const getGenres = async () => {
+    await axios({
       method: "get",
       url: "https://api.themoviedb.org/3/genre/movie/list",
       params: {
@@ -41,14 +56,38 @@ const Home = () => {
     })
       .then((response) => {
         setGenres(response.data.genres);
-        console.log(response.data.genres);
+        console.log("Gêneros carregados:", response.data.genres);
       })
       .catch((err) => {
-        console.log(err);
+        console.log("Erro ao buscar gêneros:", err);
       });
   };
 
-  const mapGenres = (movieGenreIds) => {
+  const handleSearchMovies = async (query) => {
+    if (!query.trim()) {
+      getMovies();
+      return;
+    }
+
+    await axios({
+      method: "get",
+      url: "https://api.themoviedb.org/3/search/movie",
+      params: {
+        api_key: "b687cf37dd513bd5630631d04190332a",
+        language: "pt-BR",
+        query: query,
+      },
+    })
+      .then((response) => {
+        setMovies(response.data.results);
+        console.log("Resultados da pesquisa:", response.data.results);
+      })
+      .catch((err) => {
+        console.log("Erro ao buscar filmes:", err);
+      });
+  };
+
+  const handleMapGenres = (movieGenreIds) => {
     return movieGenreIds
       .map((id) => {
         const genre = genres.find((g) => g.id === id);
@@ -58,17 +97,26 @@ const Home = () => {
       .join(", ");
   };
 
+  const handleInputChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
+
   return (
-    <main className="bg-[#121113]/90 min-h-screen pt-2 text-white">
+    <main className="bg-[#121113]/90 min-h-screen pt-6 text-white border-b-1 border-[#49474E]">
       <section className="flex items-center justify-center container mx-auto">
         <div className="flex items-center gap-2.5">
           <div className="relative bg-[#1A191B] rounded-sm w-[488px]">
             <input
               type="text"
               placeholder="Pesquise por filmes"
-              className=" text-[#49474E] placeholder-gray-400 p-4 w-full border-2"
+              value={searchQuery}
+              onChange={handleInputChange}
+              className="text-white placeholder-gray-400 p-4 w-full border-2 border-[#49474E]"
             />
-            <button className="absolute top-4 right-4">
+            <button
+              className="absolute top-4 right-4"
+              onClick={() => handleSearchMovies(searchQuery)}
+            >
               <img src={searchImg} alt="Ícone de busca" />
             </button>
           </div>
@@ -80,18 +128,13 @@ const Home = () => {
 
       <section className="container mx-auto my-6 bg-[#ebeaf814] p-4 rounded-lg">
         {movies.length > 0 ? (
-          <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+          <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
             {movies.map((movie) => (
-              <li key={movie.id} className="">
-                <p className="text-lg font-bold mb-2">{movie.title}</p>
-                <p className="text-sm text-[#B4B4B4]">
-                  {mapGenres(movie.genre_ids) || "Não disponível"}
-                </p>
-                <img
-                  src={`https://image.tmdb.org/t/p/original/${movie.backdrop_path}`}
-                  alt=""
-                />
-              </li>
+              <MovieCard
+                key={movie.id}
+                movie={movie}
+                onMapGenres={handleMapGenres}
+              />
             ))}
           </ul>
         ) : (
