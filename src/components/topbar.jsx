@@ -9,7 +9,7 @@ const Topbar = () => {
         <div className="text-white">
           <img src={logoImg} alt="" className="" />
         </div>
-        <Link to="/" className="bg-[#B744F714] flex">
+        <Link to="/" className="bg-[#B744F714] hover:bg-[#8E4EC6] flex">
           <button className="cursor-pointer rounded-sm px-5 py-3">
             <img src={sunImg} alt="" className="" />
           </button>
