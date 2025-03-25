@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import MovieCard from "../components/movieCard";
-import searchImg from "../assets/Search.svg";
-import filterImg from "../assets/filter.svg";
-import leftArrowImg from "../assets/left-arrow.svg";
-import rightArrowImg from "../assets/right-arrow.svg";
+import SearchBar from "../components/searchBar";
+import MovieList from "../components/movieList";
+import Filter from "../components/filter";
+import setaEsquerda from "../assets/left-arrow.svg";
+import setaDireita from "../assets/right-arrow.svg";
 
 const Home = () => {
   const [movies, setMovies] = useState([]);
@@ -172,7 +172,7 @@ const Home = () => {
       if (sortBy) {
         params.sort_by = sortBy;
       }
-      //requisição para obter os resultados e o total de páginas
+      // Requisição para obter os resultados e o total de páginas
       const firstResponse = await axios({
         method: "get",
         url: "https://api.themoviedb.org/3/discover/movie",
@@ -232,122 +232,34 @@ const Home = () => {
   }
 
   return (
-    <main className="bg-[#121113]/90 min-h-screen py-6 px-2 text-white border-b border-[#49474E]">
-      <section className="flex items-center justify-center container mx-auto px-4">
-        <div className="flex items-center gap-2.5 w-full max-w-md">
-          <div className="relative bg-[#1A191B] rounded-sm w-full">
-            <input
-              type="text"
-              placeholder="Pesquise por filmes"
-              value={searchQuery}
-              onChange={handleInputChange}
-              className="text-white placeholder-gray-400 p-4 w-full border-2 border-[#49474E]"
-            />
-            <button
-              className="absolute top-4 right-4"
-              onClick={() => handleSearchMovies(searchQuery)}
-            >
-              <img src={searchImg} alt="Ícone de busca" />
-            </button>
-          </div>
-          <button
-            className="cursor-pointer rounded-sm p-5 bg-[#B744F714] hover:bg-[#8E4EC6]"
-            onClick={toggleFilters}
-          >
-            <img src={filterImg} alt="Ícone de filtro" />
-          </button>
-        </div>
-      </section>
+    <main className="bg-[#121113]/90 min-h-screen py-6 text-white border-b border-[#49474E]">
+      <SearchBar
+        searchQuery={searchQuery}
+        handleInputChange={handleInputChange}
+        handleSearchMovies={handleSearchMovies}
+        toggleFilters={toggleFilters}
+      />
 
       {showFilters && (
-        <section className="container mx-auto px-4 bg-[#1A191B] p-4 rounded-lg mt-4">
-          <h2 className="text-lg font-semibold text-white mb-4">Filtros</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div>
-              <label className="text-white text-sm block mb-2" htmlFor="genre">
-                Gênero
-              </label>
-              <select
-                id="genre"
-                value={filterGenre}
-                onChange={(e) => setFilterGenre(e.target.value)}
-                className="bg-[#121113] text-white border border-[#49474E] rounded-sm p-2 w-full"
-              >
-                <option value="">Selecione</option>
-                {genres.map((genre) => (
-                  <option key={genre.id} value={genre.id}>
-                    {genre.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label
-                className="text-white text-sm block mb-2"
-                htmlFor="releaseYear"
-              >
-                Ano de Lançamento
-              </label>
-              <input
-                type="number"
-                id="releaseYear"
-                placeholder="Ex: 2023"
-                value={filterYear}
-                onChange={(e) => setFilterYear(e.target.value)}
-                className="bg-[#121113] text-white border border-[#49474E] rounded-sm p-2 w-full"
-              />
-            </div>
-            <div>
-              <label className="text-white text-sm block mb-2" htmlFor="sortBy">
-                Ordenar por
-              </label>
-              <select
-                id="sortBy"
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="bg-[#121113] text-white border border-[#49474E] rounded-sm p-2 w-full"
-              >
-                <option value="">Selecione</option>
-                <option value="popularity.asc">Menos Popular</option>
-                <option value="popularity.desc">Mais Popular</option>
-                <option value="vote_average.asc">Menor Nota</option>
-                <option value="vote_average.desc">Maior Nota</option>
-              </select>
-            </div>
-          </div>
-          <div className="flex justify-end gap-4 mt-4">
-            <button
-              className="bg-[#B744F714] text-white px-4 py-2 rounded-sm hover:bg-[#8E4EC6] transition cursor-pointer"
-              onClick={handleClearFilters}
-            >
-              Remover Filtros
-            </button>
-            <button
-              className="bg-[#B744F714] text-white px-4 py-2 rounded-sm hover:bg-[#8E4EC6] transition cursor-pointer"
-              onClick={handleApplyFilters}
-            >
-              Aplicar Filtros
-            </button>
-          </div>
-        </section>
+        <Filter
+          filterGenre={filterGenre}
+          setFilterGenre={setFilterGenre}
+          filterYear={filterYear}
+          setFilterYear={setFilterYear}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
+          handleClearFilters={handleClearFilters}
+          handleApplyFilters={handleApplyFilters}
+          genres={genres}
+        />
       )}
 
       <section className="container mx-auto my-6 px-4 bg-[#ebeaf814] p-4 rounded-lg">
-        {isLoading ? (
-          <div className="flex justify-center items-center">
-            <div className="w-12 h-12 border-4 border-t-4 border-gray-200 rounded-full animate-spin border-t-purple-500"></div>
-          </div>
-        ) : (
-          <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            {currentMovies.map((movie) => (
-              <MovieCard
-                key={movie.id}
-                movie={movie}
-                onMapGenres={handleMapGenres}
-              />
-            ))}
-          </ul>
-        )}
+        <MovieList
+          movies={currentMovies}
+          isLoading={isLoading}
+          handleMapGenres={handleMapGenres}
+        />
       </section>
 
       <div className="flex justify-center mt-6 space-x-2 px-4">
@@ -360,10 +272,7 @@ const Home = () => {
           disabled={currentPage === 1}
           className="px-6 py-3 flex items-center justify-center border border-[#49474E] bg-[#8E4EC6] text-white transition-colors duration-300 hover:bg-[#8E4EC6] disabled:opacity-50 disabled:bg-[#1A191B] disabled:cursor-auto cursor-pointer"
         >
-          <img
-            src={leftArrowImg}
-            alt="Botão a esquerda para passar ou voltar a página"
-          />
+          <img src={setaEsquerda} alt="Botão a esquerda" />
         </button>
         {pageButtons.map((page) => (
           <button
@@ -387,10 +296,7 @@ const Home = () => {
           disabled={currentPage === totalPages}
           className="px-6 py-3 flex items-center justify-center border border-[#49474E] bg-[#8E4EC6] text-white transition-colors duration-300 hover:bg-[#8E4EC6] disabled:opacity-50 disabled:bg-[#1A191B] disabled:cursor-auto cursor-pointer"
         >
-          <img
-            src={rightArrowImg}
-            alt="Botão a direita para passar ou voltar a página"
-          />
+          <img src={setaDireita} alt="Botão a direita" />
         </button>
       </div>
     </main>
