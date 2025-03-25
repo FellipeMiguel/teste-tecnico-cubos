@@ -189,52 +189,52 @@ const Home = () => {
               ))}
             </ul>
             {/* Controles de paginação com janela móvel (máximo de 5 botões) */}
-            <div className="flex justify-center mt-6 space-x-2">
-              <button
-                onClick={() => {
-                  if (currentPage > 1) {
-                    setCurrentPage(currentPage - 1);
-                  }
-                }}
-                disabled={currentPage === 1}
-                className="px-6 py-3 flex items-center justify-center border border-[#49474E] bg-[#8E4EC6] text-white transition-colors duration-300 hover:bg-[#8E4EC6] disabled:opacity-50 disabled:bg-[#1A191B] disabled:cursor-auto cursor-pointer"
-              >
-                <img
-                  src={leftArrowImg}
-                  alt="Botão a esquerda para passar ou voltar a página"
-                />
-              </button>
-              {pageButtons.map((page) => (
-                <button
-                  key={page}
-                  onClick={() => setCurrentPage(page)}
-                  className={`px-6 py-3 flex items-center justify-center border border-[#49474E] transition-colors duration-300 cursor-pointer ${
-                    page === currentPage
-                      ? "bg-[#1A191B] text-white"
-                      : "bg-[#8E4EC6] text-white hover:bg-[#8E4EC6]"
-                  }`}
-                >
-                  {page}
-                </button>
-              ))}
-              <button
-                onClick={() => {
-                  if (currentPage < totalPages) {
-                    setCurrentPage(currentPage + 1);
-                  }
-                }}
-                disabled={currentPage === totalPages}
-                className="px-6 py-3 flex items-center justify-center border border-[#49474E] bg-[#8E4EC6] text-white transition-colors duration-300 hover:bg-[#8E4EC6] disabled:opacity-50 disabled:bg-[#1A191B] disabled:cursor-auto cursor-pointer"
-              >
-                <img
-                  src={rightArrowImg}
-                  alt="Botão a direta para passar ou voltar a página"
-                />
-              </button>
-            </div>
           </>
         )}
       </section>
+      <div className="flex justify-center mt-6 space-x-2">
+        <button
+          onClick={() => {
+            if (currentPage > 1) {
+              setCurrentPage(currentPage - 1);
+            }
+          }}
+          disabled={currentPage === 1}
+          className="px-6 py-3 flex items-center justify-center border border-[#49474E] bg-[#8E4EC6] text-white transition-colors duration-300 hover:bg-[#8E4EC6] disabled:opacity-50 disabled:bg-[#1A191B] disabled:cursor-auto cursor-pointer"
+        >
+          <img
+            src={leftArrowImg}
+            alt="Botão a esquerda para passar ou voltar a página"
+          />
+        </button>
+        {pageButtons.map((page) => (
+          <button
+            key={page}
+            onClick={() => setCurrentPage(page)}
+            className={`px-6 py-3 flex items-center justify-center border border-[#49474E] transition-colors duration-300 cursor-pointer ${
+              page === currentPage
+                ? "bg-[#1A191B] text-white"
+                : "bg-[#8E4EC6] text-white hover:bg-[#8E4EC6]"
+            }`}
+          >
+            {page}
+          </button>
+        ))}
+        <button
+          onClick={() => {
+            if (currentPage < totalPages) {
+              setCurrentPage(currentPage + 1);
+            }
+          }}
+          disabled={currentPage === totalPages}
+          className="px-6 py-3 flex items-center justify-center border border-[#49474E] bg-[#8E4EC6] text-white transition-colors duration-300 hover:bg-[#8E4EC6] disabled:opacity-50 disabled:bg-[#1A191B] disabled:cursor-auto cursor-pointer"
+        >
+          <img
+            src={rightArrowImg}
+            alt="Botão a direta para passar ou voltar a página"
+          />
+        </button>
+      </div>
     </main>
   );
 };
