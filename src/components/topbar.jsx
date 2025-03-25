@@ -4,7 +4,7 @@ import sunImg from "../assets/sun.svg";
 
 const Topbar = () => {
   return (
-    <header className=" bg-[#121113] backdrop-blur-[2px] py-4 border-b-1 border-[#49474E]">
+    <header className=" bg-[#121113] backdrop-blur-[2px] py-4 px-2  border-b-1 border-[#49474E]">
       <div className="container mx-auto flex items-center justify-between">
         <Link to="/" className="text-white cursor-pointer">
           <img src={logoImg} alt="" className="" />

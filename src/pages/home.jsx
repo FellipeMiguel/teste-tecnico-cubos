@@ -14,11 +14,30 @@ const Home = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const moviesPerPage = 10;
 
-  // Estados dos filtros
+  const [maxButtonCount, setMaxButtonCount] = useState(5);
+
   const [showFilters, setShowFilters] = useState(false);
   const [filterGenre, setFilterGenre] = useState("");
   const [filterYear, setFilterYear] = useState("");
   const [sortBy, setSortBy] = useState("");
+
+  // Hook para atualizar maxButtonCount conforme o tamanho da tela
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+      if (width < 640) {
+        setMaxButtonCount(2);
+      } else if (width < 768) {
+        setMaxButtonCount(3);
+      } else {
+        setMaxButtonCount(5);
+      }
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     if (!searchQuery.trim()) {
@@ -41,6 +60,7 @@ const Home = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery]);
 
+  // Carrega filmes sem filtros – combina os resultados de 10 páginas da API
   const getMovies = async () => {
     setIsLoading(true);
     try {
@@ -70,6 +90,7 @@ const Home = () => {
     setIsLoading(false);
   };
 
+  // Busca filmes conforme o termo digitado
   const handleSearchMovies = async (query) => {
     if (!query.trim()) {
       getMovies();
@@ -96,6 +117,7 @@ const Home = () => {
     setIsLoading(false);
   };
 
+  // Busca gêneros
   const getGenres = async () => {
     try {
       const response = await axios({
@@ -113,6 +135,7 @@ const Home = () => {
     }
   };
 
+  // Mapeia os IDs dos gêneros para os nomes
   const handleMapGenres = (movieGenreIds) => {
     return movieGenreIds
       .map((id) => {
@@ -131,7 +154,7 @@ const Home = () => {
     setShowFilters((prev) => !prev);
   };
 
-  // Função para aplicar os filtros (incluindo o sort)
+  // Aplica os filtros selecionados
   const handleApplyFilters = async () => {
     setIsLoading(true);
     try {
@@ -149,13 +172,31 @@ const Home = () => {
       if (sortBy) {
         params.sort_by = sortBy;
       }
-      const response = await axios({
+      //requisição para obter os resultados e o total de páginas
+      const firstResponse = await axios({
         method: "get",
         url: "https://api.themoviedb.org/3/discover/movie",
         params: params,
       });
-      setMovies(response.data.results);
-      console.log("Filtros aplicados:", response.data.results);
+      let filteredMovies = firstResponse.data.results;
+      const totalFilteredPages = firstResponse.data.total_pages;
+      const pagesToFetch = totalFilteredPages > 10 ? 10 : totalFilteredPages;
+
+      if (pagesToFetch > 1) {
+        const requests = Array.from({ length: pagesToFetch - 1 }, (_, index) =>
+          axios({
+            method: "get",
+            url: "https://api.themoviedb.org/3/discover/movie",
+            params: { ...params, page: index + 2 },
+          })
+        );
+        const responses = await Promise.all(requests);
+        responses.forEach((res) => {
+          filteredMovies = filteredMovies.concat(res.data.results);
+        });
+      }
+      setMovies(filteredMovies);
+      console.log("Filtros aplicados:", filteredMovies);
       setCurrentPage(1);
     } catch (err) {
       console.log("Erro ao aplicar filtros:", err);
@@ -163,14 +204,22 @@ const Home = () => {
     setIsLoading(false);
   };
 
-  // Paginação local: divide o array completo de filmes em páginas de 10 itens
+  // Função para remover filtros
+  const handleClearFilters = () => {
+    setFilterGenre("");
+    setFilterYear("");
+    setSortBy("");
+    setShowFilters(false);
+    getMovies();
+  };
+
+  // Divide o array completo de filmes em páginas de 10 itens
   const totalPages = Math.ceil(movies.length / moviesPerPage);
   const indexOfLastMovie = currentPage * moviesPerPage;
   const indexOfFirstMovie = indexOfLastMovie - moviesPerPage;
   const currentMovies = movies.slice(indexOfFirstMovie, indexOfLastMovie);
 
-  // Cálculo para a exibição dos botões (janela móvel com no máximo 5 botões)
-  const maxButtonCount = 5;
+  // Cálculo para os botões de paginação
   let startPage = Math.max(1, currentPage - Math.floor(maxButtonCount / 2));
   let endPage = startPage + maxButtonCount - 1;
   if (endPage > totalPages) {
@@ -183,10 +232,10 @@ const Home = () => {
   }
 
   return (
-    <main className="bg-[#121113]/90 min-h-screen py-6 text-white border-b border-[#49474E]">
-      <section className="flex items-center justify-center container mx-auto">
-        <div className="flex items-center gap-2.5">
-          <div className="relative bg-[#1A191B] rounded-sm w-[488px]">
+    <main className="bg-[#121113]/90 min-h-screen py-6 px-2 text-white border-b border-[#49474E]">
+      <section className="flex items-center justify-center container mx-auto px-4">
+        <div className="flex items-center gap-2.5 w-full max-w-md">
+          <div className="relative bg-[#1A191B] rounded-sm w-full">
             <input
               type="text"
               placeholder="Pesquise por filmes"
@@ -211,7 +260,7 @@ const Home = () => {
       </section>
 
       {showFilters && (
-        <section className="container mx-auto bg-[#1A191B] p-4 rounded-lg mt-4">
+        <section className="container mx-auto px-4 bg-[#1A191B] p-4 rounded-lg mt-4">
           <h2 className="text-lg font-semibold text-white mb-4">Filtros</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <div>
@@ -266,7 +315,13 @@ const Home = () => {
               </select>
             </div>
           </div>
-          <div className="flex justify-end mt-4">
+          <div className="flex justify-end gap-4 mt-4">
+            <button
+              className="bg-[#B744F714] text-white px-4 py-2 rounded-sm hover:bg-[#8E4EC6] transition cursor-pointer"
+              onClick={handleClearFilters}
+            >
+              Remover Filtros
+            </button>
             <button
               className="bg-[#B744F714] text-white px-4 py-2 rounded-sm hover:bg-[#8E4EC6] transition cursor-pointer"
               onClick={handleApplyFilters}
@@ -277,7 +332,7 @@ const Home = () => {
         </section>
       )}
 
-      <section className="container mx-auto my-6 bg-[#ebeaf814] p-4 rounded-lg">
+      <section className="container mx-auto my-6 px-4 bg-[#ebeaf814] p-4 rounded-lg">
         {isLoading ? (
           <div className="flex justify-center items-center">
             <div className="w-12 h-12 border-4 border-t-4 border-gray-200 rounded-full animate-spin border-t-purple-500"></div>
@@ -295,7 +350,7 @@ const Home = () => {
         )}
       </section>
 
-      <div className="flex justify-center mt-6 space-x-2">
+      <div className="flex justify-center mt-6 space-x-2 px-4">
         <button
           onClick={() => {
             if (currentPage > 1) {
