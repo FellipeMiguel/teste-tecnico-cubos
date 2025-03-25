@@ -5,7 +5,7 @@ const MovieCard = ({ movie, onMapGenres }) => {
   const degree = votePercent * 3.6;
 
   return (
-    <Link to={`/about/${movie.id}`} className="p-4 group">
+    <Link to={`/movie/${movie.id}`} className="p-4 group">
       <li
         key={movie.id}
         className="shadow-[0px_1px_5px_0px_rgba(0,0,0,0.20)] relative"
