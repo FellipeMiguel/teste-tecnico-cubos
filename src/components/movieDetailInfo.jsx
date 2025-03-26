@@ -19,7 +19,7 @@ const MovieDetailInfo = ({
         <div className="p-4 bg-[#262626]/70 rounded-sm">
           <h4 className="text-zinc-400 text-sm font-bold">GÊNEROS</h4>
           {movie.genres && (
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap">
               {movie.genres.map((genre) => (
                 <div
                   key={genre.id}

@@ -1,1 +1,23 @@
+@import "@radix-ui/colors/mauve.css";
+@import "@radix-ui/colors/mauve-dark.css";
+@import "@radix-ui/colors/purple.css";
+@import "@radix-ui/colors/purple-dark.css";
 @import "tailwindcss";
+
+:root {
+  /* Light Theme */
+  --background: 253, 252, 253; /* mauve-1 */
+  --foreground: 26, 21, 35; /* mauve-12 */
+  --primary: 142, 78, 198; /* purple-6 */
+  --border: #171717; /* mauve-6 */
+  --text-primary: 26, 21, 35;
+}
+
+[data-theme="dark"] {
+  /* Dark Theme */
+  --background: 18, 17, 19; /* #121113 */
+  --foreground: 227, 227, 230; /* mauve-dark-12 */
+  --primary: 157, 107, 207; /* purple-dark-6 */
+  --border: 93, 93, 96; /* mauve-dark-6 */
+  --text-primary: 227, 227, 230;
+}

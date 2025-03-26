@@ -233,7 +233,13 @@ const Home = () => {
   }
 
   return (
-    <main className="bg-[#121113]/90 min-h-screen py-6 text-white border-b border-[#49474E]">
+    <main
+      className="min-h-screen py-6 border-b border-border text-[#f4f4f5]"
+      style={{
+        backgroundColor: "rgba(var(--background), 0.5)",
+        borderColor: "var(--border)",
+      }}
+    >
       <SearchBar
         searchQuery={searchQuery}
         handleInputChange={handleInputChange}
@@ -242,20 +248,34 @@ const Home = () => {
       />
 
       {showFilters && (
-        <Filter
-          filterGenre={filterGenre}
-          setFilterGenre={setFilterGenre}
-          filterYear={filterYear}
-          setFilterYear={setFilterYear}
-          sortBy={sortBy}
-          setSortBy={setSortBy}
-          handleClearFilters={handleClearFilters}
-          handleApplyFilters={handleApplyFilters}
-          genres={genres}
-        />
+        <div
+          style={{
+            backgroundColor: "rgba(var(--background), 0.95)",
+            borderColor: "rgb(var(--border))",
+          }}
+          className="container mx-auto mt-4 p-4 rounded-lg border"
+        >
+          <Filter
+            filterGenre={filterGenre}
+            setFilterGenre={setFilterGenre}
+            filterYear={filterYear}
+            setFilterYear={setFilterYear}
+            sortBy={sortBy}
+            setSortBy={setSortBy}
+            handleClearFilters={handleClearFilters}
+            handleApplyFilters={handleApplyFilters}
+            genres={genres}
+          />
+        </div>
       )}
 
-      <section className="container mx-auto my-6 px-4 bg-[#ebeaf814] p-4 rounded-lg">
+      <section
+        className="container mx-auto my-6 px-4 bg-[#ebeaf814] p-4 rounded-lg"
+        style={{
+          backgroundColor: "rgba(var(--background), 0.8)",
+          borderColor: "rgb(var(--border))",
+        }}
+      >
         <MovieList
           movies={currentMovies}
           isLoading={isLoading}
@@ -263,7 +283,12 @@ const Home = () => {
         />
       </section>
 
-      <div className="flex justify-center mt-6 space-x-2 px-4">
+      <div
+        className="flex justify-center mt-6 space-x-2 px-4"
+        style={{
+          borderColor: "rgb(var(--border))",
+        }}
+      >
         <button
           onClick={() => {
             if (currentPage > 1) {
@@ -278,6 +303,17 @@ const Home = () => {
         {pageButtons.map((page) => (
           <button
             key={page}
+            style={{
+              backgroundColor:
+                page === currentPage
+                  ? "rgba(var(--background), 0.9)"
+                  : "rgb(var(--primary))",
+              borderColor: "rgb(var(--border))",
+              color:
+                page === currentPage
+                  ? "rgb(var(--foreground))"
+                  : "rgb(var(--background))",
+            }}
             onClick={() => setCurrentPage(page)}
             className={`px-6 py-3 flex items-center justify-center border border-[#49474E] transition-colors duration-300 cursor-pointer rounded-sm ${
               page === currentPage

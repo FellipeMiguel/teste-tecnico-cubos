@@ -12,11 +12,27 @@ const Filter = ({
   genres,
 }) => {
   return (
-    <section className="container mx-auto px-4 bg-[#1A191B] p-4 rounded-lg mt-4">
-      <h2 className="text-lg font-semibold text-white mb-4">Filtros</h2>
+    <section
+      className="container mx-auto px-4 bg-[#1A191B] p-4 rounded-lg mt-4"
+      style={{
+        backgroundColor: "rgba(var(--background), 0.9)",
+        borderColor: "rgb(var(--border))",
+        color: "rgb(var(--foreground))",
+      }}
+    >
+      <h2
+        className="text-lg font-semibold text-white mb-4"
+        style={{ color: "rgb(var(--text-primary))" }}
+      >
+        Filtros
+      </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <div>
-          <label className="text-white text-sm block mb-2" htmlFor="genre">
+          <label
+            className="text-white text-sm block mb-2"
+            htmlFor="genre"
+            style={{ color: "rgb(var(--text-primary))" }}
+          >
             Gênero
           </label>
           <select
@@ -24,6 +40,11 @@ const Filter = ({
             value={filterGenre}
             onChange={(e) => setFilterGenre(e.target.value)}
             className="bg-[#121113] text-white border border-[#49474E] rounded-sm p-2 w-full"
+            style={{
+              backgroundColor: "rgba(var(--background), 0.7)",
+              borderColor: "rgb(var(--border))",
+              color: "rgb(var(--foreground))",
+            }}
           >
             <option value="">Selecione</option>
             {genres.map((genre) => (
@@ -38,6 +59,7 @@ const Filter = ({
           <label
             className="text-white text-sm block mb-2"
             htmlFor="releaseYear"
+            style={{ color: "rgb(var(--text-primary))" }}
           >
             Ano de Lançamento
           </label>
@@ -48,11 +70,20 @@ const Filter = ({
             value={filterYear}
             onChange={(e) => setFilterYear(e.target.value)}
             className="bg-[#121113] text-white border border-[#49474E] rounded-sm p-2 w-full"
+            style={{
+              backgroundColor: "rgba(var(--background), 0.7)",
+              borderColor: "rgb(var(--border))",
+              color: "rgb(var(--foreground))",
+            }}
           />
         </div>
 
         <div>
-          <label className="text-white text-sm block mb-2" htmlFor="sortBy">
+          <label
+            className="text-white text-sm block mb-2"
+            htmlFor="sortBy"
+            style={{ color: "rgb(var(--text-primary))" }}
+          >
             Ordenar por
           </label>
           <select
@@ -60,6 +91,11 @@ const Filter = ({
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
             className="bg-[#121113] text-white border border-[#49474E] rounded-sm p-2 w-full"
+            style={{
+              backgroundColor: "rgba(var(--background), 0.7)",
+              borderColor: "rgb(var(--border))",
+              color: "rgb(var(--foreground))",
+            }}
           >
             <option value="">Selecione</option>
             <option value="popularity.asc">Popularidade Crescente</option>
@@ -72,14 +108,21 @@ const Filter = ({
 
       <div className="flex justify-end gap-4 mt-4">
         <button
-          className="bg-[#B744F714] text-white px-4 py-2 rounded-sm hover:bg-[#8E4EC6] transition cursor-pointer"
           onClick={handleClearFilters}
+          style={{
+            borderColor: "rgb(var(--border))",
+          }}
+          className="bg-[#B744F714] px-4 py-2 rounded-sm border transition-colors hover:bg-[#8E4EC6] cursor-pointer"
         >
           Remover Filtros
         </button>
+
         <button
-          className="bg-[#B744F714] text-white px-4 py-2 rounded-sm hover:bg-[#8E4EC6] transition cursor-pointer"
           onClick={handleApplyFilters}
+          style={{
+            borderColor: "rgb(var(--border))",
+          }}
+          className="bg-[#B744F714] px-4 py-2 rounded-sm border transition-colors hover:bg-[#8E4EC6] cursor-pointer"
         >
           Aplicar Filtros
         </button>

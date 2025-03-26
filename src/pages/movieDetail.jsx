@@ -123,14 +123,24 @@ const MovieDetail = () => {
   };
 
   return (
-    <main className="bg-[#121113]/90 min-h-[85vh] md:py-6 py-4 text-white border-b border-[#49474E]">
+    <main
+      className="bg-[#121113]/90 min-h-[85vh] md:py-6 py-4 text-white border-b border-[#49474E]"
+      style={{
+        backgroundColor: "rgba(var(--background), 0.5)",
+      }}
+    >
       <section
         className="w-full container mx-auto bg-cover bg-center"
         style={{
           backgroundImage: `url(https://image.tmdb.org/t/p/original${movie.backdrop_path})`,
         }}
       >
-        <div className="container mx-auto md:p-8 p-4 bg-[#121113]/90">
+        <div
+          className="container mx-auto md:p-8 p-4 bg-[#121113]/90"
+          style={{
+            backgroundColor: "rgba(var(--background), 0.95)",
+          }}
+        >
           <div className="flex gap-8 flex-col lg:flex-row">
             <img
               src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
@@ -141,13 +151,21 @@ const MovieDetail = () => {
               <div className="flex justify-between flex-col xl:flex-row">
                 <div className="flex flex-col md:gap-5 md:mb-0 mb-2">
                   <div>
-                    <h1 className="text-3xl font-bold">{movie.title}</h1>
+                    <h1
+                      className="text-3xl font-bold"
+                      style={{ color: "rgb(var(--text-primary))" }}
+                    >
+                      {movie.title}
+                    </h1>
                     <h2 className="text-base text-[#a1a1aa]">
                       Título origial: {movie.original_title}
                     </h2>
                   </div>
                   {movie.tagline && (
-                    <h3 className="text-base text-[#f4f4f5]">
+                    <h3
+                      className="text-base text-[#f4f4f5]"
+                      style={{ color: "rgb(var(--text-primary))" }}
+                    >
                       {movie.tagline}
                     </h3>
                   )}
