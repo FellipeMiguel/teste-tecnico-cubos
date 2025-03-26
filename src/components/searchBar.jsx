@@ -17,7 +17,7 @@ const SearchBar = ({
             placeholder="Pesquise por filmes"
             value={searchQuery}
             onChange={handleInputChange}
-            className="text-white placeholder-gray-400 p-4 w-full border-2 border-[#49474E]"
+            className="text-white placeholder-gray-400 p-4  w-full border-2 border-[#49474E] rounded-sm"
           />
           <button
             className="absolute top-4 right-4"
@@ -27,7 +27,7 @@ const SearchBar = ({
           </button>
         </div>
         <button
-          className="cursor-pointer rounded-sm p-5 bg-[#B744F714] hover:bg-[#8E4EC6]"
+          className="cursor-pointer rounded-sm p-5 bg-[#B744F714]/60 hover:bg-[#8E4EC6]"
           onClick={toggleFilters}
         >
           <img src={filterImg} alt="Ícone de filtro" />

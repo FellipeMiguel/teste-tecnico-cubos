@@ -137,6 +137,7 @@ const Home = () => {
 
   // Mapeia os IDs dos gêneros para os nomes
   const handleMapGenres = (movieGenreIds) => {
+    if (!movieGenreIds || !Array.isArray(movieGenreIds)) return "";
     return movieGenreIds
       .map((id) => {
         const genre = genres.find((g) => g.id === id);
@@ -270,7 +271,7 @@ const Home = () => {
             }
           }}
           disabled={currentPage === 1}
-          className="px-6 py-3 flex items-center justify-center border border-[#49474E] bg-[#8E4EC6] text-white transition-colors duration-300 hover:bg-[#8E4EC6] disabled:opacity-50 disabled:bg-[#1A191B] disabled:cursor-auto cursor-pointer"
+          className="px-6 py-3 flex items-center justify-center border border-[#49474E] bg-[#8E4EC6] text-white transition-colors duration-300 hover:bg-[#8E4EC6] disabled:opacity-50 disabled:bg-[#1A191B] disabled:cursor-auto cursor-pointer rounded-sm"
         >
           <img src={setaEsquerda} alt="Botão a esquerda" />
         </button>
@@ -278,7 +279,7 @@ const Home = () => {
           <button
             key={page}
             onClick={() => setCurrentPage(page)}
-            className={`px-6 py-3 flex items-center justify-center border border-[#49474E] transition-colors duration-300 cursor-pointer ${
+            className={`px-6 py-3 flex items-center justify-center border border-[#49474E] transition-colors duration-300 cursor-pointer rounded-sm ${
               page === currentPage
                 ? "bg-[#1A191B] text-white"
                 : "bg-[#8E4EC6] text-white hover:bg-[#8E4EC6]"
@@ -294,7 +295,7 @@ const Home = () => {
             }
           }}
           disabled={currentPage === totalPages}
-          className="px-6 py-3 flex items-center justify-center border border-[#49474E] bg-[#8E4EC6] text-white transition-colors duration-300 hover:bg-[#8E4EC6] disabled:opacity-50 disabled:bg-[#1A191B] disabled:cursor-auto cursor-pointer"
+          className="px-6 py-3 flex items-center justify-center border border-[#49474E] bg-[#8E4EC6] text-white transition-colors duration-300 hover:bg-[#8E4EC6] disabled:opacity-50 disabled:bg-[#1A191B] disabled:cursor-auto cursor-pointer rounded-sm"
         >
           <img src={setaDireita} alt="Botão a direita" />
         </button>
