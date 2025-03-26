@@ -1,11 +1,12 @@
 import { Link } from "react-router-dom";
+import ApprovalPercent from "./approvalPercent";
 
 const MovieCard = ({ movie, onMapGenres }) => {
   const votePercent = Math.round(movie.vote_average * 10);
   const degree = votePercent * 3.6;
 
   return (
-    <Link to={`/about/${movie.id}`} className="p-4 group">
+    <Link to={`/movie/${movie.id}`} className="p-4 group">
       <li
         key={movie.id}
         className="shadow-[0px_1px_5px_0px_rgba(0,0,0,0.20)] relative"
@@ -24,18 +25,7 @@ const MovieCard = ({ movie, onMapGenres }) => {
 
           <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-500 group-hover:opacity-100">
             <div className="relative h-32 w-32 rounded-full">
-              <div
-                className="h-full w-full rounded-full"
-                style={{
-                  background: `conic-gradient(#fbbf24 ${degree}deg, #d1d5db ${degree}deg)`,
-                }}
-              ></div>
-
-              <div className="absolute inset-2 rounded-full flex items-center justify-center bg-[#121113]">
-                <span className="text-white font-bold text-lg">
-                  {votePercent}%
-                </span>
-              </div>
+              <ApprovalPercent votePercent={votePercent} degree={degree} />
             </div>
           </div>
         </div>

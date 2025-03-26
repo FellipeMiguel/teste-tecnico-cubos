@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import MovieCard from "../components/movieCard";
-import searchImg from "../assets/Search.svg";
-import filterImg from "../assets/filter.svg";
-import leftArrowImg from "../assets/left-arrow.svg";
-import rightArrowImg from "../assets/right-arrow.svg";
+import SearchBar from "../components/searchBar";
+import MovieList from "../components/movieList";
+import Filter from "../components/filter";
+import setaEsquerda from "../assets/left-arrow.svg";
+import setaDireita from "../assets/right-arrow.svg";
 
 const Home = () => {
   const [movies, setMovies] = useState([]);
@@ -14,7 +14,31 @@ const Home = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const moviesPerPage = 10;
 
-  // Na montagem, carrega as 10 páginas da API e os gêneros
+  const [maxButtonCount, setMaxButtonCount] = useState(5);
+
+  const [showFilters, setShowFilters] = useState(false);
+  const [filterGenre, setFilterGenre] = useState("");
+  const [filterYear, setFilterYear] = useState("");
+  const [sortBy, setSortBy] = useState("");
+
+  // Hook para atualizar maxButtonCount conforme o tamanho da tela
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+      if (width < 640) {
+        setMaxButtonCount(2);
+      } else if (width < 768) {
+        setMaxButtonCount(3);
+      } else {
+        setMaxButtonCount(5);
+      }
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   useEffect(() => {
     if (!searchQuery.trim()) {
       getMovies();
@@ -23,7 +47,6 @@ const Home = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Efeito de debounce para a pesquisa
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       if (searchQuery.trim()) {
@@ -37,7 +60,7 @@ const Home = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery]);
 
-  // Para a listagem padrão, chamamos as 10 páginas da API e combinamos os resultados
+  // Carrega filmes sem filtros – combina os resultados de 10 páginas da API
   const getMovies = async () => {
     setIsLoading(true);
     try {
@@ -54,7 +77,6 @@ const Home = () => {
         })
       );
       const responses = await Promise.all(requests);
-      // Combina todos os filmes retornados (não exclui nenhum)
       const allMovies = responses.reduce(
         (acc, res) => acc.concat(res.data.results),
         []
@@ -68,7 +90,7 @@ const Home = () => {
     setIsLoading(false);
   };
 
-  // Para pesquisas, vamos buscar apenas a página 1
+  // Busca filmes conforme o termo digitado
   const handleSearchMovies = async (query) => {
     if (!query.trim()) {
       getMovies();
@@ -95,6 +117,7 @@ const Home = () => {
     setIsLoading(false);
   };
 
+  // Busca gêneros
   const getGenres = async () => {
     try {
       const response = await axios({
@@ -112,7 +135,9 @@ const Home = () => {
     }
   };
 
+  // Mapeia os IDs dos gêneros para os nomes
   const handleMapGenres = (movieGenreIds) => {
+    if (!movieGenreIds || !Array.isArray(movieGenreIds)) return "";
     return movieGenreIds
       .map((id) => {
         const genre = genres.find((g) => g.id === id);
@@ -126,14 +151,76 @@ const Home = () => {
     setSearchQuery(event.target.value);
   };
 
-  // Paginação local: divide os filmes do array completo em páginas de 10 itens
+  const toggleFilters = () => {
+    setShowFilters((prev) => !prev);
+  };
+
+  // Aplica os filtros selecionados
+  const handleApplyFilters = async () => {
+    setIsLoading(true);
+    try {
+      const params = {
+        api_key: "b687cf37dd513bd5630631d04190332a",
+        language: "pt-BR",
+        page: 1,
+      };
+      if (filterGenre) {
+        params.with_genres = filterGenre;
+      }
+      if (filterYear) {
+        params.primary_release_year = filterYear;
+      }
+      if (sortBy) {
+        params.sort_by = sortBy;
+      }
+      // Requisição para obter os resultados e o total de páginas
+      const firstResponse = await axios({
+        method: "get",
+        url: "https://api.themoviedb.org/3/discover/movie",
+        params: params,
+      });
+      let filteredMovies = firstResponse.data.results;
+      const totalFilteredPages = firstResponse.data.total_pages;
+      const pagesToFetch = totalFilteredPages > 10 ? 10 : totalFilteredPages;
+
+      if (pagesToFetch > 1) {
+        const requests = Array.from({ length: pagesToFetch - 1 }, (_, index) =>
+          axios({
+            method: "get",
+            url: "https://api.themoviedb.org/3/discover/movie",
+            params: { ...params, page: index + 2 },
+          })
+        );
+        const responses = await Promise.all(requests);
+        responses.forEach((res) => {
+          filteredMovies = filteredMovies.concat(res.data.results);
+        });
+      }
+      setMovies(filteredMovies);
+      console.log("Filtros aplicados:", filteredMovies);
+      setCurrentPage(1);
+    } catch (err) {
+      console.log("Erro ao aplicar filtros:", err);
+    }
+    setIsLoading(false);
+  };
+
+  // Função para remover filtros
+  const handleClearFilters = () => {
+    setFilterGenre("");
+    setFilterYear("");
+    setSortBy("");
+    setShowFilters(false);
+    getMovies();
+  };
+
+  // Divide o array completo de filmes em páginas de 10 itens
   const totalPages = Math.ceil(movies.length / moviesPerPage);
   const indexOfLastMovie = currentPage * moviesPerPage;
   const indexOfFirstMovie = indexOfLastMovie - moviesPerPage;
   const currentMovies = movies.slice(indexOfFirstMovie, indexOfLastMovie);
 
-  // Cálculo para exibição dos botões: janela móvel com no máximo 5 botões
-  const maxButtonCount = 5;
+  // Cálculo para os botões de paginação
   let startPage = Math.max(1, currentPage - Math.floor(maxButtonCount / 2));
   let endPage = startPage + maxButtonCount - 1;
   if (endPage > totalPages) {
@@ -147,52 +234,36 @@ const Home = () => {
 
   return (
     <main className="bg-[#121113]/90 min-h-screen py-6 text-white border-b border-[#49474E]">
-      {/* Barra de busca */}
-      <section className="flex items-center justify-center container mx-auto">
-        <div className="flex items-center gap-2.5">
-          <div className="relative bg-[#1A191B] rounded-sm w-[488px]">
-            <input
-              type="text"
-              placeholder="Pesquise por filmes"
-              value={searchQuery}
-              onChange={handleInputChange}
-              className="text-white placeholder-gray-400 p-4 w-full border-2 border-[#49474E]"
-            />
-            <button
-              className="absolute top-4 right-4"
-              onClick={() => handleSearchMovies(searchQuery)}
-            >
-              <img src={searchImg} alt="Ícone de busca" />
-            </button>
-          </div>
-          <button className="cursor-pointer rounded-sm p-5 bg-[#B744F714] hover:bg-[#8E4EC6]">
-            <img src={filterImg} alt="Ícone de filtro" />
-          </button>
-        </div>
+      <SearchBar
+        searchQuery={searchQuery}
+        handleInputChange={handleInputChange}
+        handleSearchMovies={handleSearchMovies}
+        toggleFilters={toggleFilters}
+      />
+
+      {showFilters && (
+        <Filter
+          filterGenre={filterGenre}
+          setFilterGenre={setFilterGenre}
+          filterYear={filterYear}
+          setFilterYear={setFilterYear}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
+          handleClearFilters={handleClearFilters}
+          handleApplyFilters={handleApplyFilters}
+          genres={genres}
+        />
+      )}
+
+      <section className="container mx-auto my-6 px-4 bg-[#ebeaf814] p-4 rounded-lg">
+        <MovieList
+          movies={currentMovies}
+          isLoading={isLoading}
+          handleMapGenres={handleMapGenres}
+        />
       </section>
 
-      {/* Lista de filmes e paginação */}
-      <section className="container mx-auto my-6 bg-[#ebeaf814] p-4 rounded-lg">
-        {isLoading ? (
-          <div className="flex justify-center items-center">
-            <div className="w-12 h-12 border-4 border-t-4 border-gray-200 rounded-full animate-spin border-t-purple-500"></div>
-          </div>
-        ) : (
-          <>
-            <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-              {currentMovies.map((movie) => (
-                <MovieCard
-                  key={movie.id}
-                  movie={movie}
-                  onMapGenres={handleMapGenres}
-                />
-              ))}
-            </ul>
-            {/* Controles de paginação com janela móvel (máximo de 5 botões) */}
-          </>
-        )}
-      </section>
-      <div className="flex justify-center mt-6 space-x-2">
+      <div className="flex justify-center mt-6 space-x-2 px-4">
         <button
           onClick={() => {
             if (currentPage > 1) {
@@ -200,18 +271,15 @@ const Home = () => {
             }
           }}
           disabled={currentPage === 1}
-          className="px-6 py-3 flex items-center justify-center border border-[#49474E] bg-[#8E4EC6] text-white transition-colors duration-300 hover:bg-[#8E4EC6] disabled:opacity-50 disabled:bg-[#1A191B] disabled:cursor-auto cursor-pointer"
+          className="px-6 py-3 flex items-center justify-center border border-[#49474E] bg-[#8E4EC6] text-white transition-colors duration-300 hover:bg-[#8E4EC6] disabled:opacity-50 disabled:bg-[#1A191B] disabled:cursor-auto cursor-pointer rounded-sm"
         >
-          <img
-            src={leftArrowImg}
-            alt="Botão a esquerda para passar ou voltar a página"
-          />
+          <img src={setaEsquerda} alt="Botão a esquerda" />
         </button>
         {pageButtons.map((page) => (
           <button
             key={page}
             onClick={() => setCurrentPage(page)}
-            className={`px-6 py-3 flex items-center justify-center border border-[#49474E] transition-colors duration-300 cursor-pointer ${
+            className={`px-6 py-3 flex items-center justify-center border border-[#49474E] transition-colors duration-300 cursor-pointer rounded-sm ${
               page === currentPage
                 ? "bg-[#1A191B] text-white"
                 : "bg-[#8E4EC6] text-white hover:bg-[#8E4EC6]"
@@ -227,12 +295,9 @@ const Home = () => {
             }
           }}
           disabled={currentPage === totalPages}
-          className="px-6 py-3 flex items-center justify-center border border-[#49474E] bg-[#8E4EC6] text-white transition-colors duration-300 hover:bg-[#8E4EC6] disabled:opacity-50 disabled:bg-[#1A191B] disabled:cursor-auto cursor-pointer"
+          className="px-6 py-3 flex items-center justify-center border border-[#49474E] bg-[#8E4EC6] text-white transition-colors duration-300 hover:bg-[#8E4EC6] disabled:opacity-50 disabled:bg-[#1A191B] disabled:cursor-auto cursor-pointer rounded-sm"
         >
-          <img
-            src={rightArrowImg}
-            alt="Botão a direta para passar ou voltar a página"
-          />
+          <img src={setaDireita} alt="Botão a direita" />
         </button>
       </div>
     </main>

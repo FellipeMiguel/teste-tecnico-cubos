@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Home from "./pages/home";
-import About from "./pages/about";
+import About from "./pages/movieDetail";
 import Topbar from "./components/topbar";
 import Footer from "./components/footer";
 
@@ -12,7 +12,7 @@ const App = () => {
           <Topbar />
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/about/:id" element={<About />} />
+            <Route path="/movie/:id" element={<About />} />
           </Routes>
           <Footer />
         </div>
