@@ -123,23 +123,23 @@ const MovieDetail = () => {
   };
 
   return (
-    <main className="bg-[#121113]/90 min-h-[85vh] py-6 text-white border-b border-[#49474E]">
+    <main className="bg-[#121113]/90 min-h-[85vh] md:py-6 py-4 text-white border-b border-[#49474E]">
       <section
         className="w-full container mx-auto bg-cover bg-center"
         style={{
           backgroundImage: `url(https://image.tmdb.org/t/p/original${movie.backdrop_path})`,
         }}
       >
-        <div className="container mx-auto p-8 bg-[#121113]/90">
-          <div className="flex gap-8 flex-col md:flex-row">
+        <div className="container mx-auto md:p-8 p-4 bg-[#121113]/90">
+          <div className="flex gap-8 flex-col lg:flex-row">
             <img
               src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
               alt={movie.title}
-              className="w-96 rounded"
+              className="max-h-[542px] max-w-96 rounded"
             />
             <div className="w-full">
-              <div className="flex justify-between">
-                <div className="flex flex-col gap-5">
+              <div className="flex justify-between flex-col xl:flex-row">
+                <div className="flex flex-col md:gap-5 md:mb-0 mb-2">
                   <div>
                     <h1 className="text-3xl font-bold">{movie.title}</h1>
                     <h2 className="text-base text-[#a1a1aa]">

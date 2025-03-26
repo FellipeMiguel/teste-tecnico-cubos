@@ -3,7 +3,7 @@ import React from "react";
 const Trailer = ({ videoKey }) => {
   if (!videoKey) return null;
   return (
-    <div className="mt-6">
+    <div className="mt-6 px-4 md:px-0">
       <h3 className="text-2xl font-bold mb-4">Trailer</h3>
       <div className="relative" style={{ paddingBottom: "56.25%", height: 0 }}>
         <iframe
