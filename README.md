@@ -39,7 +39,7 @@ npm install
 npm run dev
 ```
 
-## Uso 🖱️
+## Uso
 
 ### Navegação Básica
 
@@ -88,10 +88,10 @@ npm run dev
 | <img src="./screenshots/filters.png" width="400" alt="Menu de filtros expandido"/> | <img src="./screenshots/pagination.png" width="400" alt="Controle de paginação"/> |
 | _Filtragem por gênero e ano_                                                       | _Navegação entre páginas de resultados_                                           |
 
-## Deploy 🚀
+## Deploy
 
 A aplicação está hospedada e pode ser acessada através do link:  
-**🔗 [https://cubos-movies.vercel.app](https://cubos-movies.vercel.app)**
+**🔗 [https://cubos-movies.vercel.app](https://cubos-movie-seven.vercel.app/)**
 
 [![Vercel](https://img.shields.io/badge/Deploy_na_Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://cubos-movies.vercel.app)
 
