@@ -1,6 +1,6 @@
 import React from "react";
-import searchImg from "../assets/Search.svg";
-import filterImg from "../assets/filter.svg";
+import searchImg from "../../assets/Search.svg";
+import filterImg from "../../assets/filter.svg";
 
 const SearchBar = ({
   searchQuery,
@@ -32,6 +32,7 @@ const SearchBar = ({
           <button
             className="absolute top-4 right-4"
             onClick={() => handleSearchMovies(searchQuery)}
+            aria-label="Buscar"
           >
             <img src={searchImg} alt="Ícone de busca" />
           </button>

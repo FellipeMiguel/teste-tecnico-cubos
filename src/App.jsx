@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Home from "./pages/home";
-import MovieDetail from "./pages/movieDetail";
-import Topbar from "./components/topbar";
-import Footer from "./components/footer";
-import NotFound from "./pages/notFound";
+import Home from "./pages/Home/Home";
+import MovieDetail from "./pages/MovieDetail/MovieDetail";
+import Topbar from "./components/Topbar/Topbar";
+import Footer from "./components/Footer/Footer";
+import NotFound from "./pages/NotFound/NotFound";
 
 const App = () => {
   const [theme, setTheme] = useState(() => {
