@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import ApprovalPercent from "../components/approvalPercent";
-import MovieDetailInfo from "../components/movieDetailInfo";
-import Trailer from "../components/trailer";
+import ApprovalPercent from "../../components/ApprovalPercent/ApprovalPercent";
+import MovieDetailInfo from "../../components/MovieDetailInfo/MovieDetailInfo";
+import Trailer from "../../components/Trailer/Trailer";
 
 const MovieDetail = () => {
   const { id } = useParams();

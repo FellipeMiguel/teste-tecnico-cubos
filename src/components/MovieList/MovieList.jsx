@@ -1,5 +1,5 @@
 import React from "react";
-import MovieCard from "./movieCard";
+import MovieCard from "../MovieCard/MovieCard";
 
 const MovieList = ({ movies, isLoading, handleMapGenres }) => {
   if (isLoading) {

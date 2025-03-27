@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import SearchBar from "../components/searchBar";
-import MovieList from "../components/movieList";
-import Filter from "../components/filter";
-import setaEsquerda from "../assets/left-arrow.svg";
-import setaDireita from "../assets/right-arrow.svg";
+import SearchBar from "../../components/SearchBar/SearchBar";
+import MovieList from "../../components/MovieList/MovieList";
+import Filter from "../../components/Filter/Filter";
+import setaEsquerda from "../../assets/left-arrow.svg";
+import setaDireita from "../../assets/right-arrow.svg";
 
 const Home = () => {
   const [movies, setMovies] = useState([]);
@@ -76,16 +76,16 @@ const Home = () => {
           },
         })
       );
+
       const responses = await Promise.all(requests);
-      const allMovies = responses.reduce(
-        (acc, res) => acc.concat(res.data.results),
-        []
-      );
+      const allMovies = responses.reduce((acc, res) => {
+        return res?.data?.results ? [...acc, ...res.data.results] : acc;
+      }, []);
+
       setMovies(allMovies);
-      console.log("Filmes carregados:", allMovies);
       setCurrentPage(1);
     } catch (err) {
-      console.log("Erro ao buscar filmes:", err);
+      console.log("Erro ao buscar filmes:", err.response?.data || err.message);
     }
     setIsLoading(false);
   };
@@ -108,11 +108,10 @@ const Home = () => {
           page: 1,
         },
       });
-      setMovies(response.data.results);
-      console.log("Resultados da pesquisa:", response.data.results);
+      setMovies(response?.data?.results || []);
       setCurrentPage(1);
     } catch (err) {
-      console.log("Erro ao buscar filmes:", err);
+      console.log("Erro ao buscar filmes:", err.response?.data || err.message);
     }
     setIsLoading(false);
   };
@@ -128,10 +127,9 @@ const Home = () => {
           language: "pt-BR",
         },
       });
-      setGenres(response.data.genres);
-      console.log("Gêneros carregados:", response.data.genres);
+      setGenres(response?.data?.genres || []);
     } catch (err) {
-      console.log("Erro ao buscar gêneros:", err);
+      console.log("Erro ao buscar gêneros:", err.response?.data || err.message);
     }
   };
 
@@ -270,6 +268,7 @@ const Home = () => {
       )}
 
       <section
+        data-testid="movie-list"
         className="container mx-auto my-6 px-4 bg-[#ebeaf814] p-4 rounded-lg"
         style={{
           backgroundColor: "rgba(var(--background), 0.8)",

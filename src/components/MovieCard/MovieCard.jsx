@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import ApprovalPercent from "./approvalPercent";
+import ApprovalPercent from "../ApprovalPercent/ApprovalPercent";
 
 const MovieCard = ({ movie, onMapGenres }) => {
   const votePercent = Math.round(movie.vote_average * 10);
@@ -8,6 +8,7 @@ const MovieCard = ({ movie, onMapGenres }) => {
   return (
     <Link to={`/movie/${movie.id}`} className="p-4 group">
       <li
+        data-testid="movie-card"
         key={movie.id}
         className="shadow-[0px_1px_5px_0px_rgba(0,0,0,0.20)] relative"
       >
