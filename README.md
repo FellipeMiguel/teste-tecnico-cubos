@@ -88,6 +88,34 @@ npm run dev
 | <img src="./screenshots/filters.png" width="400" alt="Menu de filtros expandido"/> | <img src="./screenshots/pagination.png" width="400" alt="Controle de paginação"/> |
 | _Filtragem por gênero e ano_                                                       | _Navegação entre páginas de resultados_                                           |
 
+## Testes
+
+Este projeto utiliza **Jest** e **React Testing Library** para garantir a qualidade dos componentes e funcionalidades.
+
+### Pré-requisitos
+
+Certifique-se de que todas as dependências estão instaladas:
+
+```bash
+npm install
+```
+
+### Executando os Testes
+
+- Para rodar os testes:
+
+  ```bash
+  npm test
+  ```
+
+  ### Estrutura dos Testes
+
+- Os arquivos de teste possuem a extensão `.test.jsx` e estão organizados junto aos componentes ou em pastas específicas para cada página.
+- Os testes utilizam **Jest** e **React Testing Library** para simular a experiência do usuário e validar os comportamentos dos componentes.
+- As chamadas à API são mockadas com o **axios** para retornar os dados esperados.
+- Atualizações assíncronas são encapsuladas em `act()` e `waitFor()`, garantindo que o DOM seja atualizado antes das asserções.
+- Se ocorrerem avisos sobre atualizações fora de `act()`, verifique se todas as interações assíncronas estão corretamente encapsuladas ou utilize helpers como `flushPromises()` para aguardar a resolução de Promises.
+
 ## Deploy
 
 A aplicação está hospedada e pode ser acessada através do link:  
